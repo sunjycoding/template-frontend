@@ -1,0 +1,19 @@
+.el-container,
+.el-header,
+.el-aside,
+.el-main,
+.el-footer {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.el-container,
+.el-aside,
+.el-main {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.el-table {
+    height: 380px !important;
+}

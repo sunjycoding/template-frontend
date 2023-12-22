@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: 'template',
   plugins: [
     vue(),
   ],
@@ -17,7 +18,7 @@ export default defineConfig({
     port: 8091,
     proxy: {
       // string shorthand: http://localhost:8091/api -> http://localhost:8090/api
-      '/api': 'http://localhost:8090',
+      '/template/api': 'http://localhost:8090',
     }
   }
 })
