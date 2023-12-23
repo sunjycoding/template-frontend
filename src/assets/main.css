@@ -22,16 +22,6 @@ body {
   margin: 20px;
 }
 
-.el-button {
-  width: 100px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.3s ease;
-}
-
-.el-button:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
 .btn-create {
   color: #ffffff !important;
   border-color: #4CAF50 !important;
@@ -70,10 +60,10 @@ body {
   background-color: #FF9800 !important;
 }
 
-.link-update {
+.btn-update-text {
   color: #2196F3 !important;
 }
 
-.link-delete {
+.btn-delete-text {
   color: #F44336 !important;
 }

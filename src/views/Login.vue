@@ -27,21 +27,14 @@ const submitForm = () => {
         if (valid) {
             customAxios.post('/authentication/login', formData)
                 .then(response => {
-                    if (response?.code === 0) {
-                        const token = response.data.token
-                        localStorage.setItem('token', token)
-                        customAxios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-                        ElMessage({
-                            message: '登录成功',
-                            type: 'success',
-                        })
-                        router.push('/dashboard');
-                    } else {
-                        ElMessage({
-                            message: '用户名或密码错误',
-                            type: 'error',
-                        })
-                    }
+                    const token = response.data.token
+                    localStorage.setItem('token', token)
+                    customAxios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+                    ElMessage({
+                        message: '登录成功',
+                        type: 'success',
+                    })
+                    router.push('/dashboard');
                 })
                 .catch(error => {
 

@@ -1,18 +1,27 @@
 <script setup>
-import { reactive, ref, computed } from 'vue'
+import { computed, ref, toRefs, watch } from 'vue'
 import customAxios from '@/api/axios'
 
-const props = defineProps(['dialogVisible', 'title', 'selectedData'])
-const emit = defineEmits(['closeDialog', 'refreshTableData'])
+const props = defineProps(['dialogVisible', 'title', 'formData'])
+const emit = defineEmits(['updateDialogVisible', 'refreshTableData'])
 
-const dialogVisibleComputed = computed({
-    get: () => props.dialogVisible,
-    set: (value) => value
+const { dialogVisible, formData } = toRefs(props)
+
+const dialogVisibleRef = ref(props.dialogVisible)
+
+watch(dialogVisible, (newValue) => {
+    dialogVisibleRef.value = newValue
+})
+
+const operationType = computed(() => {
+    if (formData.value.id) {
+        return 'update'
+    } else {
+        return 'create'
+    }
 })
 
 const formRef = ref(null)
-
-const formData = reactive({ ...props.selectedData })
 
 const formRules = {
     username: [
@@ -20,13 +29,7 @@ const formRules = {
     ],
     name: [
         { required: true, message: '请输入姓名', trigger: 'blur' },
-    ],
-    password: [
-        { required: true, message: '请输入密码', trigger: 'blur' },
-    ],
-    confirmPassword: [
-        { required: true, message: '请输入确认密码', trigger: 'blur' },
-    ],
+    ]
 }
 
 const genderOptions = [
@@ -41,7 +44,7 @@ const genderOptions = [
 ]
 
 const handleClose = () => {
-    emit('closeDialog')
+    emit('updateDialogVisible')
     formRef.value.resetFields()
 }
 
@@ -52,45 +55,42 @@ const handleCancel = () => {
 const handleConfirm = () => {
     formRef.value.validate(valid => {
         if (valid) {
-            customAxios.post('/users', formData)
-                .then(response => {
-                    if (response?.code === 0) {
+            if (operationType === 'create') {
+                customAxios.post('/users', formData.value)
+                    .then(response => {
                         handleClose()
                         emit('refreshTableData')
-                    }
-                })
-                .catch(error => {
+                    })
+                    .catch(error => {
 
-                })
+                    })
+            } else if (operationType === 'update') {
+                customAxios.put('/users', formData.value)
+                    .then(response => {
+                        handleClose()
+                        emit('refreshTableData')
+                    })
+                    .catch(error => {
+
+                    })
+            }
         }
     })
 }
 </script>
 
 <template>
-    <el-dialog v-model="dialogVisibleComputed" :title="props.title" width="50%" :before-close="handleClose">
+    <el-dialog v-model="dialogVisibleRef" :title="props.title" width="50%" :before-close="handleClose">
         <el-form ref="formRef" :model="formData" :rules="formRules" label-width="auto">
             <el-row>
                 <el-col :span="12">
                     <el-form-item label="用户名" prop="username">
-                        <el-input placeholder="请输入用户名" v-model="formData.username" />
+                        <el-input placeholder="请输入用户名" v-model="formData.username" :disabled="operationType === 'update'" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="姓名" prop="name">
                         <el-input placeholder="请输入姓名" v-model="formData.name" />
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row>
-                <el-col :span="12">
-                    <el-form-item label="密码" prop="password">
-                        <el-input placeholder="请输入密码" v-model="formData.password" type="password" />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="确认密码" prop="confirmPassword">
-                        <el-input placeholder="请输入确认密码" v-model="formData.confirmPassword" type="password" />
                     </el-form-item>
                 </el-col>
             </el-row>

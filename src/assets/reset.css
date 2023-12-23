@@ -17,3 +17,24 @@
 .el-table {
     height: 380px !important;
 }
+
+.el-pagination {
+    margin-top: 10px;
+}
+
+.el-button {
+    width: 100px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.el-button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.el-button.is-text {
+    width: 50px;
+    border: none;
+    box-shadow: none;
+    transition: none;
+}

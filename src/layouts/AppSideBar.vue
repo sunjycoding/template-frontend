@@ -1,5 +1,6 @@
 <script setup>
-import { useRouter } from 'vue-router';
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 const handleOpen = () => { }
 const handleClose = () => { }
 const menuList = [
@@ -35,6 +36,10 @@ const menuList = [
 ]
 const router = useRouter()
 
+const route = useRoute()
+
+const activeIndex = computed(() => route.path)
+
 const navigateTo = (path) => {
   router.push(path);
 }
@@ -42,7 +47,7 @@ const navigateTo = (path) => {
 
 <template>
   <div class="common-side-bar">
-    <el-menu default-active="/dashboard" active-text-color="#E9C46A" background-color="#168aad" text-color="#FFFFFF"
+    <el-menu :default-active="activeIndex" active-text-color="#E9C46A" background-color="#168aad" text-color="#FFFFFF"
       @open="handleOpen" @close="handleClose" unique-opened>
       <el-menu-item index="/dashboard" @click="navigateTo('/dashboard')">
         <el-icon>
@@ -59,7 +64,7 @@ const navigateTo = (path) => {
             <span>{{ data.label }}</span>
           </template>
           <template v-for="menu in data.children">
-            <el-menu-item :index="menu.id" @click="navigateTo(menu.path)">
+            <el-menu-item :index="menu.path" @click="navigateTo(menu.path)">
               <template #title>
                 <el-icon>
                   <component :is="menu.icon" />

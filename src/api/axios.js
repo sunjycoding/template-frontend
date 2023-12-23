@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 
 const customAxios = axios.create({
     baseURL: '/template/api',
@@ -17,7 +18,15 @@ customAxios.interceptors.request.use(config => {
 })
 
 customAxios.interceptors.response.use(response => {
-    return response.data
+    if (response.data?.code === 0) {
+        return response.data
+    } else {
+        ElMessage({
+            message: response.data?.message || '系统错误，请联系管理员',
+            type: 'error',
+        })
+    }
+
 }, error => {
     return Promise.reject(error)
 })
