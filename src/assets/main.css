@@ -1,15 +1,13 @@
-@import './reset.css';
-
 html,
 body {
-  margin: 0;
-  padding: 0;
   width: 100%;
   height: 100%;
   font-family: 'Arial', sans-serif;
 }
 
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -18,52 +16,40 @@ body {
   background-color: #EDEFF6;
 }
 
-.criteria-wrapper {
-  margin: 20px;
+.el-button {
+  width: 100px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
 }
 
-.btn-create {
-  color: #ffffff !important;
-  border-color: #4CAF50 !important;
-  background-color: #4CAF50 !important;
+.el-button.is-text {
+  width: auto;
+  border: none;
+  box-shadow: none;
 }
 
-.btn-query,
-.btn-confirm,
-.btn-update {
-  color: #ffffff !important;
-  border-color: #2196F3 !important;
-  background-color: #2196F3 !important;
+.el-pagination {
+  margin-top: 20px;
+  justify-content: flex-end;
 }
 
-.btn-cancel {
-  color: #ffffff !important;
-  border-color: #C8C9CC !important;
-  background-color: #C8C9CC !important;
+.wrapper {
+  background-color: #FFFFFF;
+  width: 100%;
+  height: 100%;
 }
 
-.btn-delete {
-  color: #ffffff !important;
-  border-color: #F44336 !important;
-  background-color: #F44336 !important;
+.wrapper .el-aside {
+  padding: 20px
 }
 
-.btn-import {
-  color: #ffffff !important;
-  border-color: #3F51B5 !important;
-  background-color: #3F51B5 !important;
+.wrapper .el-main {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column
 }
 
-.btn-export {
-  color: #ffffff !important;
-  border-color: #FF9800 !important;
-  background-color: #FF9800 !important;
-}
-
-.btn-update-text {
-  color: #2196F3 !important;
-}
-
-.btn-delete-text {
-  color: #F44336 !important;
+.table-wrapper {
+  flex: 1;
+  overflow-y: auto;
 }

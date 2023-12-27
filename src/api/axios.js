@@ -3,8 +3,8 @@ import { ElMessage } from 'element-plus'
 
 const customAxios = axios.create({
     baseURL: '/template/api',
-    timeout: 1000,
-    headers: { 'X-Custom-Header': 'foobar' }
+    timeout: 10000,
+    headers: {}
 })
 
 customAxios.interceptors.request.use(config => {
@@ -17,17 +17,31 @@ customAxios.interceptors.request.use(config => {
     return Promise.reject(error)
 })
 
+const defaultMessage = '系统错误，请联系管理员'
 customAxios.interceptors.response.use(response => {
     if (response.data?.code === 0) {
         return response.data
     } else {
         ElMessage({
-            message: response.data?.message || '系统错误，请联系管理员',
+            message: response.data?.message || defaultMessage,
             type: 'error',
         })
     }
 
 }, error => {
+    const status = error.response.status
+    let message = defaultMessage
+    switch (status) {
+        case 500:
+            message = '系统无响应，请联系管理员'
+            break;
+        default:
+            break
+    }
+    ElMessage({
+        message: message,
+        type: 'error',
+    })
     return Promise.reject(error)
 })
 

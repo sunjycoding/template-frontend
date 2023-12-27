@@ -1,28 +1,34 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import AppLayout from '../layouts/AppLayout.vue'
+import AppLayout from '../components/AppLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/login',
+      name: 'login',
       component: () => import('../views/Login.vue')
     },
     {
       component: AppLayout,
+      name: 'system',
       children: [
         {
-          path: '/dashboard',
-          name: 'dashboard',
-          component: () => import('../views/Dashboard.vue')
+          path: '/system/users',
+          name: 'user',
+          component: () => import('../views/system/SystemUserList.vue')
         },
         {
-          path: '/system/users',
-          name: 'users',
-          component: () => import('../views/user/UserManagement.vue')
+          path: '/system/menus',
+          name: 'menu',
+          component: () => import('../views/system/SystemMenuList.vue')
+        },
+        {
+          path: '/system/roles',
+          name: 'role',
+          component: () => import('../views/system/SystemRoleList.vue')
         },
       ]
-
     }
   ]
 })

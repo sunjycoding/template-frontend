@@ -1,9 +1,10 @@
 <script setup>
 import { computed, ref, toRefs, watch } from 'vue'
 import customAxios from '@/api/axios'
+import { systemUsers } from '@/api/system/systemUserApi'
 
 const props = defineProps(['dialogVisible', 'title', 'formData'])
-const emit = defineEmits(['updateDialogVisible', 'refreshTableData'])
+const emit = defineEmits(['closeDialog', 'refreshTableData'])
 
 const { dialogVisible, formData } = toRefs(props)
 
@@ -21,17 +22,19 @@ const operationType = computed(() => {
     }
 })
 
+const confirmLoading = ref(false)
 const formRef = ref(null)
-
 const formRules = {
     username: [
         { required: true, message: '请输入用户名', trigger: 'blur' },
     ],
     name: [
         { required: true, message: '请输入姓名', trigger: 'blur' },
+    ],
+    enabled: [
+        { required: true, message: '请选择用户状态', trigger: 'blur' },
     ]
 }
-
 const genderOptions = [
     {
         label: '男',
@@ -42,9 +45,8 @@ const genderOptions = [
         value: 'female'
     }
 ]
-
 const handleClose = () => {
-    emit('updateDialogVisible')
+    emit('closeDialog')
     formRef.value.resetFields()
 }
 
@@ -55,23 +57,28 @@ const handleCancel = () => {
 const handleConfirm = () => {
     formRef.value.validate(valid => {
         if (valid) {
-            if (operationType === 'create') {
-                customAxios.post('/users', formData.value)
+            confirmLoading.value = true
+            if (operationType.value === 'create') {
+                customAxios.post(systemUsers, formData.value)
                     .then(response => {
                         handleClose()
                         emit('refreshTableData')
                     })
                     .catch(error => {
-
                     })
-            } else if (operationType === 'update') {
-                customAxios.put('/users', formData.value)
+                    .finally(() => {
+                        confirmLoading.value = false
+                    })
+            } else if (operationType.value === 'update') {
+                customAxios.put(systemUsers, formData.value)
                     .then(response => {
                         handleClose()
                         emit('refreshTableData')
                     })
                     .catch(error => {
-
+                    })
+                    .finally(() => {
+                        confirmLoading.value = false
                     })
             }
         }
@@ -96,11 +103,6 @@ const handleConfirm = () => {
             </el-row>
             <el-row>
                 <el-col :span="12">
-                    <el-form-item label="手机号" prop="telephone">
-                        <el-input placeholder="请输入手机号" v-model="formData.telephone" />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
                     <el-form-item label="性别" prop="gender">
                         <el-select v-model="formData.gender" placeholder="请选择性别" clearable>
                             <el-option v-for="data in genderOptions" :key="data.value" :label="data.label"
@@ -108,12 +110,45 @@ const handleConfirm = () => {
                         </el-select>
                     </el-form-item>
                 </el-col>
+                <el-col :span="12">
+                    <el-form-item label="手机" prop="telephone">
+                        <el-input placeholder="请输入手机" v-model="formData.telephone" />
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="部门" prop="department">
+                        <el-select v-model="formData.department" placeholder="请选择部门" clearable>
+                            <el-option v-for="data in genderOptions" :key="data.value" :label="data.label"
+                                :value="data.value" />
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="岗位" prop="department">
+                        <el-select v-model="formData.position" placeholder="请选择岗位" clearable>
+                            <el-option v-for="data in genderOptions" :key="data.value" :label="data.label"
+                                :value="data.value" />
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="用户状态" prop="enabled">
+                        <el-radio-group v-model="formData.enabled">
+                            <el-radio :label="true">激活</el-radio>
+                            <el-radio :label="false">禁用</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
             </el-row>
         </el-form>
         <template #footer>
             <span>
-                <el-button class="btn-cancel" @click="handleCancel">取消</el-button>
-                <el-button class="btn-confirm" @click="handleConfirm">确定</el-button>
+                <el-button @click="handleCancel">取消</el-button>
+                <el-button @click="handleConfirm" :loading="confirmLoading">确定</el-button>
             </span>
         </template>
     </el-dialog>
