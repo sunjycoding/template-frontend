@@ -51,7 +51,8 @@ const handleLogin = () => {
 <template>
     <div class="container">
         <div class="login-form-container">
-            <el-form class="login-form" ref="formRef" :model="formData" :rules="formRules" @keyup.enter="handleLogin">
+            <el-form class="login-form" label-width="auto" ref="formRef" :model="formData" :rules="formRules"
+                @keyup.enter="handleLogin">
                 <span class="form-title">Template</span>
                 <el-form-item prop="username">
                     <el-input prefix-icon="user" placeholder="用户名" v-model="formData.username"></el-input>

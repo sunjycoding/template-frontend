@@ -1,34 +1,38 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
-import SystemUserForm from './SystemUserForm.vue';
+import SystemMenuForm from './SystemMenuForm.vue';
 import { confirmDeletion, presentSelection } from '@/utils/commonUtils'
 import customAxios from '@/api/axios'
-import { systemUsers, systemUsersPage } from '@/api/system/systemUserApi'
+import { systemMenus, systemMenusPage } from '@/api/system/systemMenuApi'
 
 const tableColumnData = [
     {
-        prop: "username",
-        label: "用户名",
-    },
-    {
         prop: "name",
-        label: "姓名",
+        label: "名称",
     },
     {
-        prop: "gender",
-        label: "性别",
+        prop: "type",
+        label: "类型",
     },
     {
-        prop: "phone",
-        label: "手机",
+        prop: "path",
+        label: "路由",
     },
     {
-        prop: "department",
-        label: "部门",
+        prop: "icon",
+        label: "图标",
     },
     {
-        prop: "position",
-        label: "岗位",
+        prop: "permissionTag",
+        label: "权限标识",
+    },
+    {
+        prop: "orderNum",
+        label: "排序",
+    },
+    {
+        prop: "enabled",
+        label: "启用状态",
     },
     {
         prop: "lastModifiedBy",
@@ -65,7 +69,7 @@ onMounted(() => {
 
 const listTableData = () => {
     tableLoading.value = true
-    customAxios.get(systemUsersPage, {
+    customAxios.get(systemMenusPage, {
         params: {
             pageNumber: pageNumber.value,
             pageSize: pageSize.value,
@@ -113,9 +117,7 @@ const handleUpdate = (row) => {
 const handleDelete = (row) => {
     confirmDeletion()
         .then(() => {
-            customAxios.delete(systemUsers, {
-                params: row.id
-            })
+            customAxios.delete(systemMenus + '/' + row.id)
                 .then(response => {
                     listTableData()
                 })
@@ -130,7 +132,7 @@ const handleBatchDelete = () => {
     if (selectedTableData.value.length) {
         const idList = selectedTableData.value.map(data => data.id)
         confirmDeletion().then(() => {
-            customAxios.delete(systemUsers, {
+            customAxios.delete(systemMenus, {
                 data: idList
             })
                 .then(response => {
@@ -151,23 +153,14 @@ const handleSelectionChange = (selection) => {
 
 <template>
     <el-container class="wrapper">
-        <el-aside width="auto">
-            <el-row>
-                <el-form :inline="true" :model="criteriaData" label-width="auto">
-                    <el-form-item>
-                        <el-input prefix-icon="search" v-model="criteriaData.name" placeholder="部门" />
-                    </el-form-item>
-                </el-form>
-            </el-row>
-        </el-aside>
         <el-main>
-            <SystemUserForm :dialogVisible=dialogVisible :title="dialogTitle" :formData="selectedData"
+            <SystemMenuForm v-if="dialogVisible" :dialogVisible=dialogVisible :title="dialogTitle" :formData="selectedData"
                 @closeDialog="closeDialog" @refreshTableData="listTableData" />
             <div class="table-criteria">
                 <el-row>
                     <el-form :inline="true" :model="criteriaData" label-width="auto">
-                        <el-form-item label="姓名">
-                            <el-input v-model="criteriaData.name" placeholder="姓名" />
+                        <el-form-item label="名称">
+                            <el-input v-model="criteriaData.name" placeholder="名称" />
                         </el-form-item>
                         <el-form-item>
                             <el-button @click="listTableData">查询</el-button>

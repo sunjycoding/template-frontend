@@ -11,22 +11,32 @@ const router = createRouter({
     },
     {
       component: AppLayout,
+      children: [
+        {
+          path: '/dashboard',
+          name: 'dashboard',
+          component: () => import('../views/Dashboard.vue')
+        }
+      ]
+    },
+    {
+      component: AppLayout,
       name: 'system',
       children: [
         {
           path: '/system/users',
           name: 'user',
-          component: () => import('../views/system/SystemUserList.vue')
+          component: () => import('../views/system/user/SystemUserList.vue')
         },
         {
           path: '/system/menus',
           name: 'menu',
-          component: () => import('../views/system/SystemMenuList.vue')
+          component: () => import('../views/system/menu/SystemMenuList.vue')
         },
         {
           path: '/system/roles',
           name: 'role',
-          component: () => import('../views/system/SystemRoleList.vue')
+          component: () => import('../views/system/role/SystemRoleList.vue')
         },
       ]
     }

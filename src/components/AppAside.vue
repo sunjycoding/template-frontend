@@ -1,44 +1,29 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import customAxios from '@/api/axios'
+import { systemMenus } from '@/api/system/systemMenuApi'
 
-const menuList = [
-    {
-        id: "1",
-        type: "catalog",
-        label: "系统管理",
-        icon: "setting",
-        children: [
-            {
-                id: "2-1",
-                type: "menu",
-                label: "用户管理",
-                icon: "user",
-                path: "/system/users"
-            },
-            {
-                id: "2-2",
-                type: "menu",
-                label: "菜单管理",
-                icon: "menu",
-                path: "/system/menus"
-            },
-            {
-                id: "2-3",
-                type: "role",
-                label: "角色管理",
-                icon: "coordinate",
-                path: "/system/roles"
-            },
-        ]
-    },
-]
+const menuData = ref([])
 const router = useRouter()
 const route = useRoute()
 const activeIndex = computed(() => route.path)
 
+onMounted(() => {
+    listMenuData()
+})
+
 const navigateTo = (path) => {
     router.push(path);
+}
+
+const listMenuData = () => {
+    customAxios.get(systemMenus)
+        .then(response => {
+            menuData.value = response.data
+        })
+        .catch(error => {
+        })
 }
 </script>
 
@@ -50,21 +35,21 @@ const navigateTo = (path) => {
             </el-icon>
             <span>首页</span>
         </el-menu-item>
-        <template v-for="data in menuList">
-            <el-sub-menu v-if="data.type === 'catalog'" :index="data.id">
+        <template v-for="data in menuData">
+            <el-sub-menu v-if="data.type === 'DIRECTORY' && data.enabled" :index="data.id">
                 <template #title>
                     <el-icon>
                         <component :is="data.icon" />
                     </el-icon>
-                    <span>{{ data.label }}</span>
+                    <span>{{ data.name }}</span>
                 </template>
                 <template v-for="menu in data.children">
-                    <el-menu-item :index="menu.path" @click="navigateTo(menu.path)">
+                    <el-menu-item v-if="menu.enabled" :index="menu.path" @click="navigateTo(menu.path)">
                         <template #title>
                             <el-icon>
                                 <component :is="menu.icon" />
                             </el-icon>
-                            <span>{{ menu.label }}</span>
+                            <span>{{ menu.name }}</span>
                         </template>
                     </el-menu-item>
                 </template>

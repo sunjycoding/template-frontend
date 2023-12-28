@@ -29,7 +29,6 @@ body {
 }
 
 .el-pagination {
-  margin-top: 20px;
   justify-content: flex-end;
 }
 
@@ -50,6 +49,16 @@ body {
 }
 
 .table-wrapper {
+  min-height: 120px;
   flex: 1;
   overflow-y: auto;
+}
+
+.two-column-form {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.two-column-form .el-form-item {
+  width: 50%;
 }
