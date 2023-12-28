@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import customAxios from '@/api/axios'
-import { systemMenus } from '@/api/system/systemMenuApi'
+import { systemMenu } from '@/api/system/systemMenuApi'
 
 const menuData = ref([])
 const router = useRouter()
@@ -18,7 +18,7 @@ const navigateTo = (path) => {
 }
 
 const listMenuData = () => {
-    customAxios.get(systemMenus)
+    customAxios.get(systemMenu)
         .then(response => {
             menuData.value = response.data
         })
