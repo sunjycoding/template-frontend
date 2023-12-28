@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref, toRefs, watch } from 'vue'
 import customAxios from '@/api/axios'
-import { systemMenus } from '@/api/system/systemMenuApi'
+import { systemMenu } from '@/api/system/systemMenuApi'
 
 const props = defineProps(['dialogVisible', 'title', 'formData'])
 const emit = defineEmits(['closeDialog', 'refreshTableData'])
@@ -64,7 +64,7 @@ const handleConfirm = () => {
         if (valid) {
             confirmLoading.value = true
             if (operationType.value === 'create') {
-                customAxios.post(systemMenus, formData.value)
+                customAxios.post(systemMenu, formData.value)
                     .then(response => {
                         handleClose()
                         emit('refreshTableData')
@@ -75,7 +75,7 @@ const handleConfirm = () => {
                         confirmLoading.value = false
                     })
             } else if (operationType.value === 'update') {
-                customAxios.put(systemMenus, formData.value)
+                customAxios.put(systemMenu, formData.value)
                     .then(response => {
                         handleClose()
                         emit('refreshTableData')
@@ -91,7 +91,7 @@ const handleConfirm = () => {
 }
 
 const listMenuOptions = () => {
-    customAxios.get(systemMenus)
+    customAxios.get(systemMenu)
         .then(response => {
             menuOptions.value = response.data
         })

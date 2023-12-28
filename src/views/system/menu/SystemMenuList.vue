@@ -3,54 +3,7 @@ import { ref, reactive, onMounted } from 'vue';
 import SystemMenuForm from './SystemMenuForm.vue';
 import { confirmDeletion, presentSelection } from '@/utils/commonUtils'
 import customAxios from '@/api/axios'
-import { systemMenus, systemMenusPage } from '@/api/system/systemMenuApi'
-
-const tableColumnData = [
-    {
-        prop: "name",
-        label: "名称",
-    },
-    {
-        prop: "type",
-        label: "类型",
-    },
-    {
-        prop: "path",
-        label: "路由",
-    },
-    {
-        prop: "icon",
-        label: "图标",
-    },
-    {
-        prop: "permissionTag",
-        label: "权限标识",
-    },
-    {
-        prop: "orderNum",
-        label: "排序",
-    },
-    {
-        prop: "enabled",
-        label: "启用状态",
-    },
-    {
-        prop: "lastModifiedBy",
-        label: "修改人",
-    },
-    {
-        prop: "lastModifiedDate",
-        label: "修改时间",
-    },
-    {
-        prop: "createdBy",
-        label: "创建人",
-    },
-    {
-        prop: "createdDate",
-        label: "创建时间",
-    },
-]
+import { systemMenu, systemMenuPage } from '@/api/system/systemMenuApi'
 
 const criteriaData = reactive({})
 const pageNumber = ref(1)
@@ -69,7 +22,7 @@ onMounted(() => {
 
 const listTableData = () => {
     tableLoading.value = true
-    customAxios.get(systemMenusPage, {
+    customAxios.get(systemMenuPage, {
         params: {
             pageNumber: pageNumber.value,
             pageSize: pageSize.value,
@@ -117,7 +70,7 @@ const handleUpdate = (row) => {
 const handleDelete = (row) => {
     confirmDeletion()
         .then(() => {
-            customAxios.delete(systemMenus + '/' + row.id)
+            customAxios.delete(systemMenu + '/' + row.id)
                 .then(response => {
                     listTableData()
                 })
@@ -132,7 +85,7 @@ const handleBatchDelete = () => {
     if (selectedTableData.value.length) {
         const idList = selectedTableData.value.map(data => data.id)
         confirmDeletion().then(() => {
-            customAxios.delete(systemMenus, {
+            customAxios.delete(systemMenu, {
                 data: idList
             })
                 .then(response => {
@@ -154,8 +107,8 @@ const handleSelectionChange = (selection) => {
 <template>
     <el-container class="wrapper">
         <el-main>
-            <SystemMenuForm v-if="dialogVisible" :dialogVisible=dialogVisible :title="dialogTitle" :formData="selectedData"
-                @closeDialog="closeDialog" @refreshTableData="listTableData" />
+            <SystemMenuForm v-if="dialogVisible" :dialogVisible="dialogVisible" :title="dialogTitle"
+                :formData="selectedData" @closeDialog="closeDialog" @refreshTableData="listTableData" />
             <div class="table-criteria">
                 <el-row>
                     <el-form :inline="true" :model="criteriaData" label-width="auto">
@@ -176,8 +129,28 @@ const handleSelectionChange = (selection) => {
             <div class="table-wrapper">
                 <el-table v-loading="tableLoading" @selection-change="handleSelectionChange" :data="tableData" stripe>
                     <el-table-column type="selection" fixed="left" width="55" />
-                    <el-table-column v-for="data in tableColumnData" :prop="data.prop" :label="data.label" min-width="120"
-                        show-overflow-tooltip />
+                    <el-table-column prop="name" label="名称" min-width="120" show-overflow-tooltip />
+                    <el-table-column align="center" prop="type" label="类型" min-width="120" show-overflow-tooltip />
+                    <el-table-column prop="path" label="路由" min-width="180" show-overflow-tooltip />
+                    <el-table-column align="center" prop="icon" label="图标" show-overflow-tooltip>
+                        <template #default="scope">
+                            <el-icon>
+                                <component :is="scope.row.icon" />
+                            </el-icon>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="permissionTag" label="权限标识" min-width="120" show-overflow-tooltip />
+                    <el-table-column align="center" prop="orderNum" label="排序" min-width="80" show-overflow-tooltip />
+                    <el-table-column align="center" prop="enabled" label="启用状态" min-width="120" show-overflow-tooltip>
+                        <template #default="scope">
+                            <el-tag :type="scope.row.enabled ? '' : 'danger'">{{ scope.row.enabled ? '启用' : '禁用'
+                            }}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="lastModifiedBy" label="修改人" min-width="120" show-overflow-tooltip />
+                    <el-table-column prop="lastModifiedDate" label="修改时间" min-width="120" show-overflow-tooltip />
+                    <el-table-column prop="createdBy" label="创建人" min-width="120" show-overflow-tooltip />
+                    <el-table-column prop="createdDate" label="创建时间" min-width="120" show-overflow-tooltip />
                     <el-table-column align="center" fixed="right" label="操作" min-width="150">
                         <template #default="scope">
                             <el-row justify="space-around">

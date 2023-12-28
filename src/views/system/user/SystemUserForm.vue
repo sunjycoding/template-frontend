@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, toRefs, watch } from 'vue'
 import customAxios from '@/api/axios'
-import { systemUsers } from '@/api/system/systemUserApi'
+import { systemUser } from '@/api/system/systemUserApi'
 
 const props = defineProps(['dialogVisible', 'title', 'formData'])
 const emit = defineEmits(['closeDialog', 'refreshTableData'])
@@ -59,7 +59,7 @@ const handleConfirm = () => {
         if (valid) {
             confirmLoading.value = true
             if (operationType.value === 'create') {
-                customAxios.post(systemUsers, formData.value)
+                customAxios.post(systemUser, formData.value)
                     .then(response => {
                         handleClose()
                         emit('refreshTableData')
@@ -70,7 +70,7 @@ const handleConfirm = () => {
                         confirmLoading.value = false
                     })
             } else if (operationType.value === 'update') {
-                customAxios.put(systemUsers, formData.value)
+                customAxios.put(systemUser, formData.value)
                     .then(response => {
                         handleClose()
                         emit('refreshTableData')
@@ -113,7 +113,7 @@ const handleConfirm = () => {
                     <el-option v-for="data in genderOptions" :key="data.value" :label="data.label" :value="data.value" />
                 </el-select>
             </el-form-item>
-            <el-form-item label="用户状态" prop="enabled">
+            <el-form-item label="状态" prop="enabled">
                 <el-radio-group v-model="formData.enabled">
                     <el-radio :label="true">激活</el-radio>
                     <el-radio :label="false">禁用</el-radio>

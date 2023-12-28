@@ -1,3 +1,3 @@
-export const systemUsers = 'system/users'
+export const systemUser = 'system/users'
 
-export const systemUsersPage = systemUsers + '/page'
+export const systemUserPage = systemUser + '/page'

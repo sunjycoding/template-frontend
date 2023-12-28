@@ -1,3 +1,3 @@
-export const systemMenus = 'system/menus'
+export const systemMenu = 'system/menus'
 
-export const systemMenusPage = systemMenus + '/page'
+export const systemMenuPage = systemMenu + '/page'
