@@ -1,18 +1,12 @@
 <script setup>
-import { computed, onMounted, ref, toRefs, watch } from 'vue'
+import { computed, onMounted, ref, toRefs } from 'vue'
 import customAxios from '@/api/axios'
 import { systemMenu } from '@/api/system/systemMenuApi'
 
 const props = defineProps(['dialogVisible', 'title', 'formData'])
 const emit = defineEmits(['closeDialog', 'refreshTableData'])
 
-const { dialogVisible, formData } = toRefs(props)
-
-const dialogVisibleRef = ref(props.dialogVisible)
-
-watch(dialogVisible, (newValue) => {
-    dialogVisibleRef.value = newValue
-})
+const { dialogVisible, title, formData } = toRefs(props)
 
 const operationType = computed(() => {
     if (formData.value.id) {
@@ -101,7 +95,7 @@ const listMenuOptions = () => {
 </script>
 
 <template>
-    <el-dialog v-model="dialogVisibleRef" :title="props.title" width="50%" :before-close="handleClose">
+    <el-dialog v-model="dialogVisible" :title="title" width="50%" :before-close="handleClose">
         <el-form class="two-column-form" ref="formRef" :model="formData" :rules="formRules" label-width="auto">
             <el-form-item label="名称" prop="name">
                 <el-input placeholder="请输入名称" v-model="formData.name" />
@@ -127,7 +121,7 @@ const listMenuOptions = () => {
                 <el-input placeholder="请输入权限标识, 例如: user:list" v-model="formData.permissionTag" />
             </el-form-item>
             <el-form-item label="排序" prop="orderNum">
-                <el-input-number :min="0" :max="100" placeholder="默认100" v-model="formData.orderNum" />
+                <el-input-number :min="0" :max="100" v-model="formData.orderNum" />
             </el-form-item>
             <el-form-item label="启用状态" prop="enabled">
                 <el-radio-group v-model="formData.enabled">

@@ -1,18 +1,12 @@
 <script setup>
-import { computed, ref, toRefs, watch } from 'vue'
+import { computed, ref, toRefs } from 'vue'
 import customAxios from '@/api/axios'
 import { systemUser } from '@/api/system/systemUserApi'
 
 const props = defineProps(['dialogVisible', 'title', 'formData'])
 const emit = defineEmits(['closeDialog', 'refreshTableData'])
 
-const { dialogVisible, formData } = toRefs(props)
-
-const dialogVisibleRef = ref(props.dialogVisible)
-
-watch(dialogVisible, (newValue) => {
-    dialogVisibleRef.value = newValue
-})
+const { dialogVisible, title, formData } = toRefs(props)
 
 const operationType = computed(() => {
     if (formData.value.id) {
@@ -87,7 +81,7 @@ const handleConfirm = () => {
 </script>
 
 <template>
-    <el-dialog v-model="dialogVisibleRef" :title="props.title" width="50%" :before-close="handleClose">
+    <el-dialog v-model="dialogVisible" :title="title" width="50%" :before-close="handleClose">
         <el-form class="two-column-form" ref="formRef" :model="formData" :rules="formRules" label-width="auto">
             <el-form-item label="用户名" prop="username">
                 <el-input placeholder="请输入用户名" v-model="formData.username" :disabled="operationType === 'update'" />
