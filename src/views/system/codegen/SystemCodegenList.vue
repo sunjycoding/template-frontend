@@ -2,7 +2,7 @@
 import { ref, reactive, onMounted } from 'vue';
 import CodegenTableColumnInfo from './CodegenTableColumnInfo.vue';
 import customAxios from '@/api/axios'
-import { systemCodegen, systemCodegenPage } from '@/api/system/systemCodegenApi'
+import { systemCodegenGenerate, systemCodegenPage } from '@/api/system/systemCodegenApi'
 
 const criteriaData = reactive({})
 const pageNumber = ref(1)
@@ -63,7 +63,23 @@ const handleDetail = (row) => {
 }
 
 const handleGenerate = (row) => {
-
+    customAxios.post(systemCodegenGenerate + '/' + row.name, {}, {
+        responseType: 'blob'
+    })
+        .then(response => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'codegen.zip');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+        })
+        .finally(() => {
+        })
 }
 </script>
 
@@ -94,12 +110,14 @@ const handleGenerate = (row) => {
                         <template #default="scope">
                             <el-row justify="space-around">
                                 <el-col :span="6">
-                                    <el-button class="btn-update-text" size="small" @click="handleDetail(scope.row)"
-                                        text>详情</el-button>
+                                    <el-button class="btn-update-text" size="small" @click="handleDetail(scope.row)" text>
+                                        详情
+                                    </el-button>
                                 </el-col>
                                 <el-col :span="6">
-                                    <el-button class="btn-update-text" size="small" @click="handleGenerate(scope.row)"
-                                        text>生成</el-button>
+                                    <el-button class="btn-update-text" size="small" @click="handleGenerate(scope.row)" text>
+                                        生成
+                                    </el-button>
                                 </el-col>
                             </el-row>
                         </template>

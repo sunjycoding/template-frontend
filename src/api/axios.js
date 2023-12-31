@@ -19,14 +19,19 @@ customAxios.interceptors.request.use(config => {
 
 const defaultMessage = '系统错误，请联系管理员'
 customAxios.interceptors.response.use(response => {
-    if (response.data?.code === 0) {
-        return response.data
-    } else {
-        ElMessage({
-            message: response.data?.message || defaultMessage,
-            type: 'error',
-        })
+    const contentType = response.headers['content-type'];
+    if (contentType && contentType.includes('application/json')) {
+        if (response.data?.code === 0) {
+            return response.data
+        } else {
+            ElMessage({
+                message: response.data?.message || defaultMessage,
+                type: 'error',
+            })
+        }
+        return
     }
+    return response
 
 }, error => {
     const status = error.response.status
