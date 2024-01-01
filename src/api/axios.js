@@ -1,3 +1,4 @@
+import router from '@/router';
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
@@ -37,8 +38,11 @@ customAxios.interceptors.response.use(response => {
     const status = error.response.status
     let message = defaultMessage
     switch (status) {
+        case 401:
+            message = error.response.data?.message || '权限认证失败，请联系管理员'
+            break;
         case 500:
-            message = '系统无响应，请联系管理员'
+            message = error.response.data?.message || '系统无响应，请联系管理员'
             break;
         default:
             break
